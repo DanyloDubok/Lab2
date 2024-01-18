@@ -27,12 +27,21 @@ TOTAL = SUM * ((1 + p) ** (SET_PERIOD / FIXED_PERIOD))
 """
 
 
-# TODO: add lines to calculate yields for some common periods
-#       of time (e.g. 1 month, 1 year, 5 years, 10 years)
-# TODO: change the script to output the 1-year percent yield
-#       as well
-# TODO: (extra) Output only percents if the initial SUM is
-#       not known at the moment the script is run
+def calculate_yield(initial_sum, percent, fixed_period, set_period):
+    """Calculate deposit yield."""
+    per = percent / 100
+    growth = (1 + per) ** (set_period / fixed_period)
+    return initial_sum * growth
+
+
+def calculate_common_periods(initial_sum, percent, fixed_period):
+    """Calculate yields for common periods of time."""
+    one_month_yield = calculate_yield(initial_sum, percent, fixed_period, 1)
+    one_year_yield = calculate_yield(initial_sum, percent, fixed_period, 12)
+    five_years_yield = calculate_yield(initial_sum, percent, fixed_period, 60)
+    ten_years_yield = calculate_yield(initial_sum, percent, fixed_period, 120)
+
+    return one_month_yield, one_year_yield, five_years_yield, ten_years_yield
 
 
 USAGE = """USAGE: {script} initial_sum percent fixed_period set_period
@@ -40,13 +49,6 @@ USAGE = """USAGE: {script} initial_sum percent fixed_period set_period
 \tCalculate deposit yield. See script source for more details.
 """
 USAGE = USAGE.strip()
-
-
-def deposit(initial_sum, percent, fixed_period, set_period):
-    """Calculate deposit yield."""
-    per = percent / 100
-    growth = (1 + per) ** (set_period / fixed_period)
-    return initial_sum * growth
 
 
 def main(args):
@@ -57,17 +59,27 @@ def main(args):
     args = args[1:]
     initial_sum, percent, fixed_period, set_period = map(float, args)
 
-    # same as
-    # initial_sum = float(args[0])
-    # percent = float(args[1])
-    # ...
+    total_yield = calculate_yield(initial_sum, percent, fixed_period, set_period)
+    formatted_yield = "{:.2f}".format(total_yield)
+    print(f"Total equivalent after {set_period} time period: {formatted_yield}")
 
-    res = deposit(initial_sum, percent, fixed_period, set_period)
-    print(res)
+    # Calculate and print yields for common periods
+    one_month_yield, one_year_yield, five_years_yield, ten_years_yield = calculate_common_periods(
+        initial_sum, percent, fixed_period
+    )
+    formatted_one_month_yield = "{:.2f}".format(one_month_yield)
+    formatted_one_year_yield = "{:.2f}".format(one_year_yield)
+    formatted_five_years_yield = "{:.2f}".format(five_years_yield)
+    formatted_ten_years_yield = "{:.2f}".format(ten_years_yield)
+
+    print(f"1-Month Yield: {formatted_one_month_yield}")
+    print(f"1-Year Yield: {formatted_one_year_yield}")
+    print(f"5-Year Yield: {formatted_five_years_yield}")
+    print(f"10-Year Yield: {formatted_ten_years_yield}")
 
 
 if __name__ == '__main__':
     import sys
 
     main(sys.argv)
-# Lab2
+# master
